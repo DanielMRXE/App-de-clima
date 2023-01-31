@@ -5,13 +5,35 @@ import {
   TouchableWithoutFeedback,
   View,
   Text,
-  Animated
+  Animated,
+  Alert
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const Formulario = () => {
+const Formulario = ({busqueda,guardarBusqueda, guardarConsultar}) => {
+  
+  const {pais, ciudad}= busqueda;
 
   const [animacionboton]=useState(new Animated.Value(1));  
+
+  const consultarClima=()=>{
+    if(pais.trim()===" "|| ciudad.trim()===" "){
+      mostrarAlerta();
+      return;
+    }
+    //Consultando la Api
+    guardarConsultar(true)
+  }
+
+
+  const mostrarAlerta = ()=>{
+    Alert.alert(
+      "Error",
+      "No seas pendejo, rellena el formulario hdp",
+      [{text: "entendido"}]
+    )
+  }
+
 
   const animacionEntrada = () => {
     Animated.spring(animacionboton,{
@@ -40,11 +62,16 @@ const Formulario = () => {
     <View  >
       <View >
         <View>
-          <TextInput placeholder="ciudad" placeholderTextColor="#666"  style={styles.input}/>
+          <TextInput 
+          onChangeText={ciudad => guardarBusqueda ({...busqueda, ciudad})}
+          value = {ciudad} placeholder="Ciudad" placeholderTextColor="#666"  style={styles.input}/>
         </View>
       </View>
       <View>
-        <Picker itemStyle={{height:120,backgroundColor: "#FFF"}}>
+        <Picker 
+        onValueChange={pais=>guardarBusqueda({...busqueda,pais})}
+        selectedValue={pais}
+        itemStyle={{height:120,backgroundColor: "#FFF"}}>
           <Picker.Item label="-Seleecion una opcion-"value=""/>
           <Picker.Item label="Estados Unidos" value="US"/>
           <Picker.Item label="Mexico" value="MX"/>
@@ -58,6 +85,7 @@ const Formulario = () => {
       <TouchableWithoutFeedback
       onPressIn={()=>animacionEntrada()}
       onPressOut={()=>animacionSalida()}
+      onPress={()=>consultarClima()}
       >
         <Animated.View style={[styles.btnBuscar,estiloAnimacion]}>
           <Text style={styles.textoBuscar}>Buscar clima</Text>

@@ -1,18 +1,36 @@
-import { StyleSheet, View, TouchableWithoutFeedback, Keyboard,useState } from 'react-native';
+import React, {useState, useEffect} from "react"
+import { StyleSheet, View, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import Formulario  from './Componentes/Formulario';
 
 export default function App() {
-  
-  const ocultarTeclado = ()=>{
+
+ const [busqueda, guardarBusqueda ] = useState({
+   ciudad:"",
+   pais: "",
+})
+
+const [consultar, guardarConsultar] = useState(false);
+
+ 
+useEffect(() =>{
+  if(consultar){
+  console.log("Consultando la API")
+  }
+  },[consultar])
+
+
+const ocultarTeclado = ()=>{
 Keyboard.dismiss();
   }
-
   return (
     <>
     <TouchableWithoutFeedback onPress={()=>ocultarTeclado()}>
     <View style={styles.app}>
       <View style={styles.contenido}>
-        <Formulario/>
+        <Formulario
+        busqueda={busqueda}
+        guardarBusqueda={guardarBusqueda}
+        guardarConsultar={guardarConsultar} />  
       </View>  
     </View>
     </TouchableWithoutFeedback>
